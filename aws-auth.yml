@@ -1,0 +1,4 @@
+---
+:db:
+  :database: db/aws-users.db
+  :adapter: sqlite3
