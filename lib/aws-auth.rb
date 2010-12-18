@@ -11,7 +11,7 @@ require File.join(File.dirname(__FILE__),'aws-auth/admin')
 module AWSAuth
 class Base
 
-  VERSION = "0.1.0"
+  VERSION = "0.9.0"
   ROOT_DIR = ENV['AWS_ROOT_DIR'] || File.join(File.dirname(__FILE__),'..')
   DEFAULT_PASSWORD = "testp@ss"
 
