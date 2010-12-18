@@ -4,7 +4,9 @@ require 'activerecord'
 require 'base64'
 require 'digest/sha1'
 require 'openssl'
+require 'sinatra'
 require File.join(File.dirname(__FILE__),'aws-auth/user')
+require File.join(File.dirname(__FILE__),'aws-auth/admin')
 
 module AWSAuth
 class Base
@@ -17,7 +19,8 @@ class Base
     @@config ||= load_config()
   end
 
-  def initialize(app)
+  def initialize(app,config_path=nil)
+    @@config_path = config_path
     @app = app
     ActiveRecord::Base.establish_connection(AWSAuth::Base.config[:db])
   end
@@ -99,7 +102,7 @@ class Base
   def self.load_config()
     return YAML::load(File.read(ENV['AWS_AUTH_PATH'])) if ENV['AWS_AUTH_PATH'] && File.exists?(ENV['AWS_AUTH_PATH'])
     return YAML::load(File.read(File.expand_path("~/.aws-auth.yml"))) if File.exists?(File.expand_path("~/.aws-auth.yml"))
-    return YAML::load(File.read("aws-auth.yml")) if File.exists?("aws-auth.yml")
+    return YAML::load(File.read(@@config_path)) if @@config_path && File.exists?(@@config_path)
     return YAML::load(File.read(File.join(File.dirname(__FILE__), '../aws-auth.yml'))) if File.exists?(File.join(File.dirname(__FILE__), '../aws-auth.yml'))
   end
 
