@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'rack'
-require 'activerecord'
+require 'active_record'
 require 'base64'
 require 'digest/sha1'
 require 'openssl'
@@ -14,15 +14,16 @@ class Base
   DEFAULT_PASSWORD = "testp@ss"
 
   def self.config
-    @@config ||= {}
+    @@config ||= load_config()
   end
 
-  def initialize(app,config_path=nil)
-    @@config_path = config_path
-    @@config = AWSAuth::Base.load_config()
+  def self.config_path=(val)
+    @@config_path = val
+  end
+
+  def initialize(app)
     @app = app
-    AWSAuth::User.establish_connection(AWSAuth::Base.config[:db])
-#    ActiveRecord::Base.establish_connection(AWSAuth::Base.config[:db])
+    AWSAuth::User.establish_connection(AWSAuth::Base.config[:auth])
   end
 
   def call(env)
@@ -40,6 +41,7 @@ class Base
         end
       end
     elsif env['HTTP_AUTHORIZATION'] =~ /^AWS (\w+):(.+)$/
+      request = Rack::Request.new(env)
       meta, amz = {}, {}
       env.each do |k,v|
         k = k.downcase.gsub('_', '-')

@@ -5,7 +5,7 @@ require File.join(File.dirname(__FILE__), '../aws-auth')
 
 namespace :auth do
   task :environment do
-    ActiveRecord::Base.establish_connection(AWSAuth::Base.config[:db])
+    ActiveRecord::Base.establish_connection(AWSAuth::Base.config[:auth])
   end
 
   desc "Migrate the database"
@@ -13,7 +13,7 @@ namespace :auth do
     ActiveRecord::Base.logger = Logger.new(STDOUT)
     ActiveRecord::Migration.verbose = true
 
-    out_dir = File.dirname(AWSAuth::Base.config[:db][:database])
+    out_dir = File.dirname(AWSAuth::Base.config[:auth][:database])
     FileUtils.mkdir_p(out_dir) unless File.exists?(out_dir)
 
     ActiveRecord::Migrator.migrate(File.join(AWSAuth::Base::ROOT_DIR, 'db', 'migrate'), ENV["VERSION"] ? ENV["VERSION"].to_i : nil)

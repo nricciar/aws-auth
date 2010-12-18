@@ -11,12 +11,12 @@ spec = Gem::Specification.new do |s|
   s.homepage = "http://github.com/nricciar/aws-auth"
   s.platform = Gem::Platform::RUBY
   s.summary = "AWS Style authentication middleware"
-  s.files = FileList["{lib,db}/**/*"].to_a +
+  s.files = FileList["{lib,db,public}/**/*"].to_a +
     ["Rakefile","README","aws-auth.yml"]
   s.require_path = "lib"
   s.description = File.read("README")
   s.executables = []
   s.has_rdoc = false
   s.extra_rdoc_files = ["README"]
-#  s.add_dependency("activerecord")
+  s.add_dependency("sinatra")
 end
