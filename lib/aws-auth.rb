@@ -29,7 +29,18 @@ class Base
   def call(env)
     date_s = env['HTTP_X_AMZ_DATE'] || env['HTTP_DATE']
 
-    if env['HTTP_X_AMZN_AUTHORIZATION'] =~ /^AWS3-HTTPS AWSAccessKeyId=(.*),Algorithm=HmacSHA256,Signature=(.*)$/
+    auth = Rack::Auth::Basic::Request.new(env)
+
+    # Basic Auth
+    if auth.provided? && auth.basic?
+      user = AWSAuth::User.find_by_login(auth.credentials[0])
+      unless user.nil?
+        if user.password == AWSAuth::Base.hmac_sha1( auth.credentials[1], user.secret )
+          env['AWS_AUTH_USER'] = user
+        end
+      end
+    # Route 53
+    elsif env['HTTP_X_AMZN_AUTHORIZATION'] =~ /^AWS3-HTTPS AWSAccessKeyId=(.*),Algorithm=HmacSHA256,Signature=(.*)$/
       access_key = $1
       signature = $2
       user = AWSAuth::User.find_by_key(access_key)
@@ -40,6 +51,7 @@ class Base
           env['AWS_AUTH_USER'] = user
         end
       end
+    # S3
     elsif env['HTTP_AUTHORIZATION'] =~ /^AWS (\w+):(.+)$/
       request = Rack::Request.new(env)
       meta, amz = {}, {}
