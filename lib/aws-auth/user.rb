@@ -1,6 +1,8 @@
 module AWSAuth
 class User < ActiveRecord::Base
 
+  establish_connection AWSAuth::Base.config[:auth]
+
   validates_length_of :login, :within => 3..40
   validates_uniqueness_of :login
   validates_uniqueness_of :key
