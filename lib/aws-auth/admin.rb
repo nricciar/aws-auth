@@ -48,23 +48,17 @@ module AWS
 
     post '/login' do
       @user = AWSAuth::User.find_by_login params[:login]
-puts @@home_page
       if @user
 	if @user.password == AWSAuth::Base.hmac_sha1( params[:password], @user.secret )
-puts "boo"
 	  session[:user_id] = @user.id
 	  redirect @@home_page
 	else
-puts "wtf"
 	  @user.errors.add(:password, 'is incorrect')
 	end
       else
-puts "bla"
 	@user = AWSAuth::User.new
 	@user.errors.add(:login, 'not found')
       end
-puts @user.inspect
-puts AWSAuth::User.find(:all).inspect
       r :login, "Login"
     end
 
