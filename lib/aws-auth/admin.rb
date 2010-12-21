@@ -250,7 +250,8 @@ __END__
   - if @user.superuser?
     %div.required.inline
       %label{ :for => "user[superuser]" } Is a super-admin?
-      %input{ :type => "checkbox", :name => "user[superuser]", :value => @usero.superuser }
+      %input{ :type => "hidden", :name => "user[superuser]", :value => 0 }
+      %input{ :type => "checkbox", :name => "user[superuser]", :value => 1, :checked => @usero.superuser? }
   %div.required
     %label{ :for => "user[password]" } Password
     %input.fixed{ :type => "password", :name => "user[password]" }
