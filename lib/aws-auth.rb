@@ -28,7 +28,7 @@ class Base
 
   def call(env)
     date_s = env['HTTP_X_AMZ_DATE'] || env['HTTP_DATE']
-
+    request = Rack::Request.new(env)
     auth = Rack::Auth::Basic::Request.new(env)
 
     # Basic Auth
@@ -52,8 +52,7 @@ class Base
         end
       end
     # S3
-    elsif env['HTTP_AUTHORIZATION'] =~ /^AWS (\w+):(.+)$/
-      request = Rack::Request.new(env)
+    elsif env['HTTP_AUTHORIZATION'] =~ /^AWS (\w+):(.+)$/ || !request['Signature'].nil?
       meta, amz = {}, {}
       env.each do |k,v|
         k = k.downcase.gsub('_', '-')
