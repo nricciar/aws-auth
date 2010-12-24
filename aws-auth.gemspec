@@ -19,4 +19,5 @@ spec = Gem::Specification.new do |s|
   s.has_rdoc = false
   s.extra_rdoc_files = ["README"]
   s.add_dependency("sinatra")
+  s.add_dependency("activerecord")
 end
