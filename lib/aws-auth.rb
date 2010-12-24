@@ -9,9 +9,9 @@ require 'sinatra'
 module AWSAuth
 class Base
 
-  VERSION = "0.9.0"
+  VERSION = "0.9.1"
   ROOT_DIR = ENV['AWS_ROOT_DIR'] || File.join(File.dirname(__FILE__),'..')
-  DEFAULT_PASSWORD = "testp@ss"
+  DEFAULT_PASSWORD = "pass@word1"
 
   def self.config
     @@config ||= load_config()
